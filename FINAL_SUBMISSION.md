@@ -1,8 +1,8 @@
 # DeployLens — Final Internship Submission
 
-**Submitted by:** Gaurav Wakle  
-**Project:** A release observability web application  
-**Live website:** https://deploylens.onrender.com  
+**Submitted by:** Gaurav Wakle
+**Project:** A release observability web application
+**Live website:** https://deploylens.onrender.com
 **GitHub repository:** https://github.com/Gauravwakle96/deploylens
 
 DeployLens brings release history, GitHub Actions results, service health, incident
