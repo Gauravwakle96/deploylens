@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+node_modules/
+frontend/dist/
+*.sqlite3
+*.sqlite3-*
+*.log
+*.tsbuildinfo
+.local/

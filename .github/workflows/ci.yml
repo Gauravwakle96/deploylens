@@ -1,0 +1,107 @@
+name: DeployLens CI/CD
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: deploylens-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17.11-alpine
+        env:
+          POSTGRES_USER: deploylens
+          POSTGRES_PASSWORD: ephemeral_ci_password
+          POSTGRES_DB: deploylens_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd 'pg_isready -U deploylens -d deploylens_test'
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - run: npm ci && npm run build && npm audit --omit=dev --audit-level=high
+        working-directory: frontend
+      - run: uv run ruff check . && uv run ruff format --check . && uv run mypy
+      - run: uv run pytest --junitxml=test-results.xml
+        env:
+          TEST_POSTGRES_URL: postgresql://deploylens:ephemeral_ci_password@localhost:5432/deploylens_test
+      - run: uvx pip-audit -r requirements.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: test-results
+          path: test-results.xml
+  docker:
+    name: Docker
+    needs: build-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          load: true
+          tags: deploylens:ci
+          build-args: APP_VERSION=${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Smoke test running container
+        env:
+          EXPECTED_VERSION: ${{ github.sha }}
+        run: |
+          docker run -d --name deploylens-ci -p 127.0.0.1:8015:8000 --read-only --tmpfs /tmp --tmpfs /data:uid=10001,gid=10001 --cap-drop ALL --security-opt no-new-privileges -e DATABASE_URL=sqlite:////data/test.sqlite3 -e COLLECTOR_ENABLED=false deploylens:ci
+          python scripts/smoke.py
+      - name: Container logs
+        if: always()
+        run: docker logs deploylens-ci
+  deploy:
+    name: Deploy
+    needs: docker
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.DEPLOYLENS_URL != ''
+    environment:
+      name: production
+      url: ${{ vars.DEPLOYLENS_URL }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - run: python scripts/deploy.py
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RENDER_SERVICE_ID: ${{ vars.RENDER_SERVICE_ID }}
+          DEPLOYLENS_URL: ${{ vars.DEPLOYLENS_URL }}
+  monitor:
+    name: Monitor
+    needs: deploy
+    environment: production
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - run: python scripts/smoke.py
+        env:
+          SMOKE_URL: ${{ vars.DEPLOYLENS_URL }}
+          EXPECTED_VERSION: ${{ github.sha }}
+      - run: python scripts/deploy.py record
+        env:
+          DEPLOYLENS_URL: ${{ vars.DEPLOYLENS_URL }}
+          DEPLOYLENS_ADMIN_TOKEN: ${{ secrets.DEPLOYLENS_ADMIN_TOKEN }}

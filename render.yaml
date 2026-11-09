@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: deploylens
+    runtime: docker
+    plan: free
+    region: singapore
+    autoDeployTrigger: off
+    healthCheckPath: /health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_SCHEMA
+        value: deploylens
+      - key: DATABASE_SSLMODE
+        value: require
+      - key: ADMIN_TOKEN
+        sync: false
+      - key: GITHUB_REPOSITORY
+        value: Gauravwakle96/deploylens

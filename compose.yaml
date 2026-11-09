@@ -1,0 +1,54 @@
+name: deploylens
+services:
+  db:
+    image: postgres:17.11-alpine
+    environment:
+      POSTGRES_USER: deploylens
+      POSTGRES_DB: deploylens
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run python scripts/setup_local.py first}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U deploylens -d deploylens']
+      interval: 5s
+      timeout: 3s
+      retries: 15
+    networks: [database]
+    restart: unless-stopped
+  migrate:
+    build: .
+    image: deploylens:local
+    environment: &app-env
+      DATABASE_URL: postgresql://deploylens:${POSTGRES_PASSWORD}@db:5432/deploylens
+      DATABASE_SSLMODE: disable
+      ADMIN_TOKEN: ${ADMIN_TOKEN:?Run python scripts/setup_local.py first}
+      GITHUB_REPOSITORY: Gauravwakle96/deploylens
+    command: [python, -m, scripts.migrate]
+    depends_on:
+      db: {condition: service_healthy}
+    networks: [database]
+  app:
+    build: .
+    image: deploylens:local
+    environment:
+      <<: *app-env
+      ENVIRONMENT: local
+    ports: ['127.0.0.1:8015:8000']
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 100
+    mem_limit: 512m
+    networks: [frontend, database]
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options: {max-size: 5m, max-file: '2'}
+volumes:
+  postgres_data:
+networks:
+  frontend:
+  database: {internal: true}
