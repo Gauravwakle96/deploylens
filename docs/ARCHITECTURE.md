@@ -25,7 +25,9 @@ health samples, incidents, pipeline snapshots and verified releases. SQLAlchemy 
 parameterized queries; migrations run explicitly before production startup.
 
 The single-worker collector checks the operator-selected URL every 60 seconds while the
-app runs and polls GitHub every five minutes. No arbitrary URL input is exposed.
+app runs. Local mode polls GitHub every five minutes. Production disables anonymous polling
+and receives workflow completion reports using a temporary Actions token and authenticated
+callback. The report workflow executes trusted main-branch code only. No arbitrary URL input is exposed.
 An incident opens on the first failed probe and closes on recovery. Missing/stale samples
 are shown as unknown. Sample success is explicitly not a continuous uptime SLA.
 

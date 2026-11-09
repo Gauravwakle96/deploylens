@@ -5,6 +5,10 @@ React + FastAPI dashboard. Uses real GitHub Actions and HTTP health data.
 
 **GitHub → Build → Test → Docker → Deploy → Monitor**
 
+Live dashboard: https://deploylens.onrender.com
+
+Repository: https://github.com/Gauravwakle96/deploylens
+
 ## Run locally
 
 Install Docker Desktop with Linux containers and Python 3.13+.
@@ -44,6 +48,7 @@ The deploy job is skipped until a deployment URL has been configured.
 - Local GitHub polling runs every five minutes. Production receives actual workflow/job
   results through an authenticated completion workflow, avoiding shared-IP API rate limits.
   Reports use the temporary GitHub Actions token; no long-lived GitHub token is stored on Render.
+  The reporting workflow checks out trusted `main` code and never executes source-run artifacts.
 - First failed probe opens an incident; recovery resolves it. Stale observations show unknown.
 - `/metrics` exposes request/error counters, process uptime and open incident count.
 - JSON stdout logs include request ID, route, status and duration, without headers or bodies.

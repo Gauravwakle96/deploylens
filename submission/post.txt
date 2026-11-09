@@ -1,0 +1,10 @@
+Built DeployLens for Module 5: a dashboard for release history, CI/CD results, service health, and incidents.
+
+GitHub → Build → Test → Docker → Deploy → Monitor.
+
+Stack: React, FastAPI, PostgreSQL, Docker, and GitHub Actions.
+
+Live: https://deploylens.onrender.com
+Code: https://github.com/Gauravwakle96/deploylens
+
+#DevOps #CICD #Docker #GitHubActions #BuildInPublic
