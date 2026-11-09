@@ -1,0 +1,32 @@
+{
+  "workflow_url": "https://github.com/Gauravwakle96/deploylens/actions/runs/42661628180",
+  "commit": "55ac17a992378990a442c482e02fce8e20bc6815",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "name": "Build & Test",
+      "conclusion": "success"
+    },
+    {
+      "name": "Docker",
+      "conclusion": "success"
+    },
+    {
+      "name": "Deploy",
+      "conclusion": "success"
+    },
+    {
+      "name": "Monitor",
+      "conclusion": "success"
+    }
+  ],
+  "live_health": {
+    "status": "ok",
+    "version": "55ac17a992378990a442c482e02fce8e20bc6815",
+    "database": "connected",
+    "environment": "production"
+  },
+  "external_monitor_workflow": "https://github.com/Gauravwakle96/deploylens/actions/runs/42660920319",
+  "external_monitor_conclusion": "success",
+  "ci_tests_passed": 24
+}

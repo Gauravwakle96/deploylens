@@ -1,0 +1,14 @@
+{
+  "docker_health": "healthy",
+  "app_user": "10001:10001",
+  "read_only": true,
+  "capabilities_dropped": [
+    "ALL"
+  ],
+  "persistent_samples_before": 15,
+  "persistent_samples_after": 16,
+  "database_outage_http": 503,
+  "outage_response_seconds": 8.05,
+  "recovery_http": 200,
+  "url": "http://localhost:8015"
+}

@@ -1,0 +1,135 @@
+{
+  "url": "https://deploylens.onrender.com",
+  "contract": "docs/ARCHITECTURE.md: release observability UI contract",
+  "targetViewports": [
+    "1440x1000",
+    "768x1024",
+    "390x844"
+  ],
+  "accessibility": {
+    "status": "pass",
+    "evidence": "All four tabs passed axe WCAG A/AA checks at three sizes; keyboard focus and scrollable logs verified; reduced motion enabled."
+  },
+  "responsive": {
+    "status": "pass",
+    "evidence": "No horizontal page overflow at desktop, tablet or mobile widths. Navigation and tabs remained usable."
+  },
+  "contentStates": {
+    "loading": {
+      "status": "pass",
+      "evidence": "Delayed API fixture showed connecting state before response."
+    },
+    "empty": {
+      "status": "pass",
+      "evidence": "Empty API fixture showed first-pipeline guidance; release search showed no matches."
+    },
+    "error": {
+      "status": "pass",
+      "evidence": "503 fixture showed retry action; retry executed."
+    },
+    "partial": {
+      "status": "pass",
+      "evidence": "Failed GitHub fixture retained dashboard data and showed sync warning."
+    },
+    "success": {
+      "status": "pass",
+      "evidence": "Real dashboard loaded; refresh and all tabs worked."
+    },
+    "permission": {
+      "status": "pass",
+      "evidence": "Unauthenticated release POST returned 401; public UI exposes read-only actions."
+    }
+  },
+  "renderedEvidence": [
+    {
+      "viewport": "1440x1000",
+      "artifact": "deploylens-1440.png",
+      "observation": "Actual running dashboard; all four tabs have no overflow or axe WCAG A/AA findings."
+    },
+    {
+      "viewport": "768x1024",
+      "artifact": "deploylens-768.png",
+      "observation": "Actual running dashboard; all four tabs have no overflow or axe WCAG A/AA findings."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "deploylens-390.png",
+      "observation": "Actual running dashboard; all four tabs have no overflow or axe WCAG A/AA findings."
+    }
+  ],
+  "checks": [
+    {
+      "viewport": "1440x1000",
+      "tab": "Overview",
+      "overflow": false,
+      "axe_violations": []
+    },
+    {
+      "viewport": "1440x1000",
+      "tab": "Pipelines",
+      "overflow": false,
+      "axe_violations": []
+    },
+    {
+      "viewport": "1440x1000",
+      "tab": "Incidents",
+      "overflow": false,
+      "axe_violations": []
+    },
+    {
+      "viewport": "1440x1000",
+      "tab": "Logs",
+      "overflow": false,
+      "axe_violations": []
+    },
+    {
+      "viewport": "768x1024",
+      "tab": "Overview",
+      "overflow": false,
+      "axe_violations": []
+    },
+    {
+      "viewport": "768x1024",
+      "tab": "Pipelines",
+      "overflow": false,
+      "axe_violations": []
+    },
+    {
+      "viewport": "768x1024",
+      "tab": "Incidents",
+      "overflow": false,
+      "axe_violations": []
+    },
+    {
+      "viewport": "768x1024",
+      "tab": "Logs",
+      "overflow": false,
+      "axe_violations": []
+    },
+    {
+      "viewport": "390x844",
+      "tab": "Overview",
+      "overflow": false,
+      "axe_violations": []
+    },
+    {
+      "viewport": "390x844",
+      "tab": "Pipelines",
+      "overflow": false,
+      "axe_violations": []
+    },
+    {
+      "viewport": "390x844",
+      "tab": "Incidents",
+      "overflow": false,
+      "axe_violations": []
+    },
+    {
+      "viewport": "390x844",
+      "tab": "Logs",
+      "overflow": false,
+      "axe_violations": []
+    }
+  ],
+  "javascript_errors": []
+}
