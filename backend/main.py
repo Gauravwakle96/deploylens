@@ -120,10 +120,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return response
 
     @app.get("/health")
-    def health():
+    async def health():
         try:
-            db.check()
-        except SQLAlchemyError:
+            await asyncio.wait_for(asyncio.to_thread(db.check), timeout=6)
+        except (SQLAlchemyError, TimeoutError):
             return JSONResponse({"status": "unavailable"}, status_code=503)
         return {
             "status": "ok",
