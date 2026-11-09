@@ -1,5 +1,7 @@
 # DeployLens architecture
 
+[Download PNG](architecture.png) · [Download SVG](architecture.svg) · [Final submission](../FINAL_SUBMISSION.md)
+
 DeployLens is a public, read-only operations dashboard for Gaurav's internship project.
 The operator configures one monitored service and one GitHub repository. Public visitors
 cannot change targets, trigger deployments, or submit monitoring results.

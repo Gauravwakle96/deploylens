@@ -1,4 +1,6 @@
-# DeployLens · Module 5
+# DeployLens · CI/CD and Monitoring
+
+**[Final internship submission: requirements, links, diagram and verification](FINAL_SUBMISSION.md)**
 
 Release history, GitHub pipeline results, service health and incident timelines in one
 React + FastAPI dashboard. Uses real GitHub Actions and HTTP health data.

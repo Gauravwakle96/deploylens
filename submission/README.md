@@ -1,5 +1,7 @@
 # Module 5 submission
 
+The completed project submission is in [FINAL_SUBMISSION.md](../FINAL_SUBMISSION.md).
+
 Project: **DeployLens — Release observability dashboard**
 
 Requirements are implemented in `.github/workflows/ci.yml` (build, tests, Docker,

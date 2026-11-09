@@ -1,0 +1,44 @@
+{
+  "verified_at": "2026-11-09T17:21:05.924740+00:00",
+  "repository": "https://github.com/Gauravwakle96/deploylens",
+  "website": "https://deploylens.onrender.com",
+  "cloud": {
+    "provider": "Render",
+    "plan": "free",
+    "runtime": "docker",
+    "automatic_provider_deploys": "no"
+  },
+  "managed_database": {
+    "provider": "Supabase PostgreSQL",
+    "tls_verified": true,
+    "dedicated_schema": "deploylens",
+    "role_can_create_in_schema": false,
+    "role_can_write_other_project_feedback": false
+  },
+  "live_health": {
+    "status": "ok",
+    "version": "55ac17a992378990a442c482e02fce8e20bc6815",
+    "database": "connected",
+    "environment": "production"
+  },
+  "monitoring": {
+    "target_status": "healthy",
+    "last_check": "2026-11-09T17:21:01.308495+00:00",
+    "observed_samples_24h": 30,
+    "metrics_url": "https://deploylens.onrender.com/metrics",
+    "workflow_runs": [
+      {
+        "url": "https://github.com/Gauravwakle96/deploylens/actions/runs/42660920319",
+        "event": "workflow_dispatch",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "ci_cd": {
+    "url": "https://github.com/Gauravwakle96/deploylens/actions/runs/42661628180",
+    "conclusion": "success",
+    "commit": "55ac17a992378990a442c482e02fce8e20bc6815"
+  },
+  "managed_auth": "Not used; public read-only dashboard. Write callbacks use pipeline bearer authentication."
+}
