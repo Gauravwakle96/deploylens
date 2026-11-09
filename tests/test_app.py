@@ -1,6 +1,7 @@
 import asyncio
 import os
 from datetime import UTC, datetime, timedelta
+from urllib.parse import urlsplit
 
 import httpx
 import pytest
@@ -248,6 +249,9 @@ def test_production_config_rejects_unsafe_settings(overrides):
 
 @pytest.mark.skipif(not os.environ.get("TEST_POSTGRES_URL"), reason="Requires PostgreSQL")
 def test_postgres_integration(tmp_path):
+    assert urlsplit(os.environ["TEST_POSTGRES_URL"]).path.endswith("_test"), (
+        "Integration tests require a disposable database named *_test"
+    )
     config = Settings(
         _env_file=None,
         environment="test",
@@ -266,3 +270,6 @@ def test_postgres_integration(tmp_path):
     with db.session() as session:
         assert session.scalar(select(Incident)).resolved_at
         assert len(list(session.scalars(select(Check)))) == 2
+        session.add(Release(commit_sha="c" * 40, run_id=42659495375, version="test"))
+    with db.session() as session:
+        assert session.scalar(select(Release)).run_id == 42659495375

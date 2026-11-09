@@ -2,7 +2,7 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import UTC, datetime
 
-from sqlalchemy import JSON, Boolean, Float, Integer, String, Text, create_engine, text
+from sqlalchemy import JSON, BigInteger, Boolean, Float, Integer, String, Text, create_engine, text
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 
 from .config import Settings
@@ -42,13 +42,13 @@ class Release(Base):
     commit_sha: Mapped[str] = mapped_column(String(40), unique=True)
     deployed_at: Mapped[str] = mapped_column(String(40), default=now)
     environment: Mapped[str] = mapped_column(String(20), default="production")
-    run_id: Mapped[int] = mapped_column(Integer)
+    run_id: Mapped[int] = mapped_column(BigInteger)
     version: Mapped[str] = mapped_column(String(80))
 
 
 class Pipeline(Base):
     __tablename__ = "pipelines"
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=False)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=False)
     title: Mapped[str] = mapped_column(String(240))
     status: Mapped[str] = mapped_column(String(40))
     commit_sha: Mapped[str] = mapped_column(String(40))
