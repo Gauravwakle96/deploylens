@@ -55,7 +55,7 @@ def deploy():
             ):
                 print("Live application is healthy and running the validated commit")
                 return
-        except (urllib.error.URLError, ValueError):
+        except (urllib.error.URLError, ValueError, ConnectionError, TimeoutError):
             pass
         if attempt % 5 == 0:
             print("Waiting for the new version to become healthy...")

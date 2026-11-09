@@ -33,6 +33,26 @@ class ReleaseInput(BaseModel):
     version: str = Field(min_length=1, max_length=80)
 
 
+class JobInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    name: str = Field(min_length=1, max_length=100)
+    status: str = Field(pattern=r"^[a-z_]{1,40}$")
+    started_at: datetime | None = None
+    completed_at: datetime | None = None
+
+
+class PipelineInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: int = Field(gt=0, lt=9223372036854775807)
+    title: str = Field(min_length=1, max_length=240)
+    status: str = Field(pattern=r"^[a-z_]{1,40}$")
+    commit_sha: str = Field(pattern=r"^[a-f0-9]{40}$")
+    branch: str = Field(min_length=1, max_length=160)
+    started_at: datetime
+    updated_at: datetime
+    jobs: list[JobInput] = Field(max_length=30)
+
+
 def row_dict(row):
     return {column.name: getattr(row, column.name) for column in row.__table__.columns}
 
@@ -203,6 +223,38 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             session.add(saved)
             session.flush()
             return {"id": saved.id, "recorded": True}
+
+    @app.post("/api/pipelines", status_code=201)
+    async def pipeline_report(request: Request):
+        token = config.admin_token.get_secret_value()
+        if len(token) < 32 or not hmac.compare_digest(
+            request.headers.get("authorization", ""), "Bearer " + token
+        ):
+            raise HTTPException(401, "Pipeline authentication required")
+        body = bytearray()
+        async for chunk in request.stream():
+            if len(body) + len(chunk) > 32768:
+                raise HTTPException(413, "Request too large")
+            body.extend(chunk)
+        try:
+            payload = PipelineInput.model_validate_json(body)
+        except ValueError:
+            raise HTTPException(422, "Invalid pipeline report") from None
+        with db.session() as session:
+            values = payload.model_dump(mode="json")
+            values["url"] = (
+                f"https://github.com/{config.github_repository}/actions/runs/{payload.id}"
+            )
+            session.merge(Pipeline(**values))
+            session.merge(
+                SyncState(
+                    key="github",
+                    checked_at=now(),
+                    success=True,
+                    detail="Verified workflow results received from GitHub Actions",
+                )
+            )
+        return {"recorded": True}
 
     @app.get("/metrics")
     def metrics():

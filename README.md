@@ -41,7 +41,9 @@ The deploy job is skipped until a deployment URL has been configured.
 ## Monitoring and environment management
 
 - Health probes run every 60 seconds while the service is awake. Target: Feedback Board.
-- GitHub workflow/job results refresh every five minutes. Failed syncs retain saved history.
+- Local GitHub polling runs every five minutes. Production receives actual workflow/job
+  results through an authenticated completion workflow, avoiding shared-IP API rate limits.
+  Reports use the temporary GitHub Actions token; no long-lived GitHub token is stored on Render.
 - First failed probe opens an incident; recovery resolves it. Stale observations show unknown.
 - `/metrics` exposes request/error counters, process uptime and open incident count.
 - JSON stdout logs include request ID, route, status and duration, without headers or bodies.

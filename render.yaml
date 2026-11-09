@@ -19,3 +19,5 @@ services:
         sync: false
       - key: GITHUB_REPOSITORY
         value: Gauravwakle96/deploylens
+      - key: GITHUB_POLL_ENABLED
+        value: false

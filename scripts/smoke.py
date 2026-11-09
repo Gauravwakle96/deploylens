@@ -32,7 +32,7 @@ def main():
                 )
             )
             return
-        except (urllib.error.URLError, ValueError):
+        except (urllib.error.URLError, ValueError, ConnectionError, TimeoutError):
             time.sleep(5)
     raise RuntimeError("Application smoke checks failed")
 

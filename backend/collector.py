@@ -115,7 +115,7 @@ async def collect(config: Settings, db: Database):
         while True:
             try:
                 await check_service(config, db, client)
-                if time.monotonic() >= next_github:
+                if config.github_poll_enabled and time.monotonic() >= next_github:
                     await sync_github(config, db, client)
                     next_github = time.monotonic() + config.github_interval_seconds
             except Exception:

@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     check_interval_seconds: int = Field(default=60, ge=10, le=3600)
     github_interval_seconds: int = Field(default=300, ge=60, le=3600)
     collector_enabled: bool = True
+    github_poll_enabled: bool = True
     app_version: str = "local"
     allowed_hosts: str = "localhost,127.0.0.1,testserver"
     render_external_hostname: str = ""
